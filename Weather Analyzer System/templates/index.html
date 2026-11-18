@@ -1,0 +1,217 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#080d1c">
+    <title>Atmos — Weather Data Analyzer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="../static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="app-shell">
+
+    <aside class="sidebar" id="sidebar">
+        <a class="brand" href="#">
+            <span class="brand-icon"><i class="fa-solid fa-cloud-bolt"></i></span>
+            <span>atmos<span class="brand-dot">.</span><small>WEATHER INTELLIGENCE</small></span>
+        </a>
+
+        <div class="side-label">WORKSPACE</div>
+        <nav class="side-nav">
+            <a href="#overview" class="nav-link active"><i class="fa-solid fa-grid-2"></i> Overview</a>
+            <a href="#forecast" class="nav-link"><i class="fa-solid fa-cloud-sun"></i> Forecast</a>
+            <a href="#analytics" class="nav-link"><i class="fa-solid fa-chart-line"></i> Analytics</a>
+            <a href="#history" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i> Historical Data</a>
+        </nav>
+
+        <div class="side-label">YOUR LOCATIONS</div>
+        <div class="saved-cities" id="savedCities">
+            <button class="saved-city" data-city="Karachi"><span class="city-dot"></span> Karachi <i class="fa-solid fa-arrow-up-right-from-square"></i></button>
+            <button class="saved-city" data-city="London"><span class="city-dot"></span> London <i class="fa-solid fa-arrow-up-right-from-square"></i></button>
+            <button class="saved-city" data-city="Dubai"><span class="city-dot"></span> Dubai <i class="fa-solid fa-arrow-up-right-from-square"></i></button>
+            <button class="saved-city" data-city="New York"><span class="city-dot"></span> New York <i class="fa-solid fa-arrow-up-right-from-square"></i></button>
+        </div>
+
+        <div class="sidebar-bottom">
+            <div class="mini-weather">
+                <div class="mini-top"><span>WEATHER INSIGHT</span><i class="fa-solid fa-sparkles"></i></div>
+                <p>Weather data makes smarter decisions possible.</p>
+                <a href="#analytics">Explore analytics <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <div class="profile">
+                <div class="avatar">UK</div>
+                <div><strong>USMAN KAMBOH</strong><small>Data Science Project</small></div>
+                <i class="fa-solid fa-ellipsis"></i>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content" id="overview">
+        <header class="topbar">
+            <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Toggle menu"><i class="fa-solid fa-bars"></i></button>
+            <div class="breadcrumb">Workspace <i class="fa-solid fa-chevron-right"></i> <strong>Weather Overview</strong></div>
+            <div class="top-actions">
+                <span class="live-indicator"><span></span> LIVE DATA</span>
+                <button class="icon-btn" id="unitToggle" title="Switch temperature unit">°C</button>
+                <button class="icon-btn" id="refreshBtn" title="Refresh weather"><i class="fa-solid fa-rotate"></i></button>
+            </div>
+        </header>
+
+        <section class="page-heading">
+            <div>
+                <div class="eyebrow"><span></span> WEATHER INTELLIGENCE PLATFORM</div>
+                <h1>Weather <span>Overview</span></h1>
+                <p>Understand the atmosphere. Discover the patterns.</p>
+            </div>
+            <div class="heading-date">
+                <i class="fa-regular fa-calendar"></i>
+                <span id="currentDate">Loading date...</span>
+            </div>
+        </section>
+
+        <section class="search-row">
+            <form class="search-box" id="searchForm">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input id="cityInput" type="text" placeholder="Search any city worldwide..." value="Karachi" autocomplete="off" aria-label="City name">
+                <button type="submit">Search <i class="fa-solid fa-arrow-right"></i></button>
+            </form>
+            <button class="location-btn" id="locationBtn"><i class="fa-solid fa-location-crosshairs"></i> My Location</button>
+        </section>
+
+        <div class="status-message" id="statusMessage" role="status"></div>
+
+        <section class="hero-weather panel">
+            <div class="hero-glow"></div>
+            <div class="hero-left">
+                <div class="location-tag"><i class="fa-solid fa-location-dot"></i> CURRENT CONDITIONS</div>
+                <h2 id="heroCity">Karachi, Pakistan</h2>
+                <p class="hero-time" id="heroTime">Local time loading...</p>
+                <div class="temperature-line">
+                    <span class="hero-temp" id="heroTemp">--°</span>
+                    <div class="weather-symbol" id="heroIcon"><i class="fa-solid fa-cloud-sun"></i></div>
+                </div>
+                <div class="hero-condition" id="heroCondition">Getting weather data...</div>
+                <p class="feels-like">Feels like <strong id="feelsLike">--°</strong></p>
+            </div>
+            <div class="hero-right">
+                <div class="hero-stat"><span><i class="fa-solid fa-sun"></i> UV INDEX</span><strong id="uvIndex">--</strong><small id="uvLabel">Loading</small></div>
+                <div class="hero-stat"><span><i class="fa-solid fa-eye"></i> VISIBILITY</span><strong id="visibility">--</strong><small>Current visibility</small></div>
+                <div class="hero-stat"><span><i class="fa-solid fa-gauge-high"></i> PRESSURE</span><strong id="pressure">--</strong><small>Atmospheric pressure</small></div>
+                <div class="hero-stat"><span><i class="fa-solid fa-cloud-rain"></i> PRECIPITATION</span><strong id="precipitation">--</strong><small>Current conditions</small></div>
+            </div>
+            <div class="hero-footer">
+                <span><i class="fa-solid fa-database"></i> Powered by Open-Meteo</span>
+                <span id="updatedAt">Waiting for update</span>
+            </div>
+        </section>
+
+        <section class="section-block">
+            <div class="section-heading">
+                <div><h2>Atmospheric Metrics</h2><p>Real-time environmental measurements</p></div>
+                <span class="section-badge"><i class="fa-solid fa-wave-square"></i> LIVE METRICS</span>
+            </div>
+            <div class="metrics-grid">
+                <article class="metric-card">
+                    <div class="metric-top"><span>HUMIDITY</span><span class="metric-icon purple"><i class="fa-solid fa-droplet"></i></span></div>
+                    <div class="metric-value" id="humidity">--<small>%</small></div>
+                    <div class="progress-track"><div class="progress-fill purple-fill" id="humidityBar"></div></div>
+                    <div class="metric-bottom"><span>Relative humidity</span><i class="fa-solid fa-water"></i></div>
+                </article>
+                <article class="metric-card">
+                    <div class="metric-top"><span>WIND SPEED</span><span class="metric-icon cyan"><i class="fa-solid fa-wind"></i></span></div>
+                    <div class="metric-value" id="windSpeed">--<small> km/h</small></div>
+                    <div class="metric-bottom"><span id="windDirection">Wind direction --</span><i class="fa-solid fa-arrow-up" id="windArrow"></i></div>
+                </article>
+                <article class="metric-card">
+                    <div class="metric-top"><span>FEELS LIKE</span><span class="metric-icon orange"><i class="fa-solid fa-temperature-half"></i></span></div>
+                    <div class="metric-value" id="feelsMetric">--<small>°</small></div>
+                    <div class="metric-bottom"><span>Perceived temperature</span><i class="fa-solid fa-person"></i></div>
+                </article>
+                <article class="metric-card">
+                    <div class="metric-top"><span>CLOUD COVER</span><span class="metric-icon blue"><i class="fa-solid fa-cloud"></i></span></div>
+                    <div class="metric-value" id="cloudCover">--<small>%</small></div>
+                    <div class="progress-track"><div class="progress-fill blue-fill" id="cloudBar"></div></div>
+                    <div class="metric-bottom"><span>Sky coverage</span><i class="fa-solid fa-cloud"></i></div>
+                </article>
+            </div>
+        </section>
+
+        <section class="section-block" id="forecast">
+            <div class="section-heading">
+                <div><h2>7-Day Forecast</h2><p>Plan ahead with daily weather predictions</p></div>
+                <span class="subtle-label">NEXT 7 DAYS</span>
+            </div>
+            <div class="forecast-grid" id="forecastGrid">
+                <div class="loading-card">Loading forecast...</div>
+            </div>
+        </section>
+
+        <section class="section-block" id="analytics">
+            <div class="section-heading">
+                <div><h2>Weather Analytics</h2><p>Visualize patterns in atmospheric data</p></div>
+                <div class="chart-controls">
+                    <button class="chart-tab active" data-chart="temperature">Temperature</button>
+                    <button class="chart-tab" data-chart="rain">Rainfall</button>
+                </div>
+            </div>
+
+            <div class="analytics-grid">
+                <article class="panel chart-panel">
+                    <div class="chart-title-row"><div><h3 id="chartTitle">Temperature Trends</h3><p id="chartSubtitle">Daily maximum and minimum temperatures</p></div><span class="chart-symbol"><i class="fa-solid fa-chart-area"></i></span></div>
+                    <div class="chart-container"><canvas id="weatherChart"></canvas></div>
+                </article>
+                <article class="panel insights-panel">
+                    <div class="chart-title-row"><div><h3>Smart Insights</h3><p>Automatically generated from weather data</p></div><span class="chart-symbol gold"><i class="fa-solid fa-wand-magic-sparkles"></i></span></div>
+                    <div class="insights-list" id="insightsList">
+                        <div class="insight-item"><span class="insight-icon purple"><i class="fa-solid fa-chart-line"></i></span><div><strong>Analyzing trends</strong><p>Weather insights will appear here.</p></div></div>
+                    </div>
+                    <div class="insight-note"><i class="fa-solid fa-circle-info"></i> Insights are calculated from available forecast data.</div>
+                </article>
+            </div>
+        </section>
+
+        <section class="section-block" id="history">
+            <div class="section-heading">
+                <div><h2>Historical Data Lab</h2><p>Explore the last 7 days of recorded weather</p></div>
+                <span class="section-badge"><i class="fa-solid fa-flask"></i> DATA ANALYSIS</span>
+            </div>
+            <div class="history-layout">
+                <article class="panel history-table-panel">
+                    <div class="table-heading"><h3>Historical Weather Records</h3><button id="exportBtn" class="export-btn"><i class="fa-solid fa-download"></i> Export CSV</button></div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>DATE</th><th>MAX TEMP</th><th>MIN TEMP</th><th>RAIN (MM)</th><th>WIND (KM/H)</th></tr></thead>
+                            <tbody id="historyBody"><tr><td colspan="5">Loading data...</td></tr></tbody>
+                        </table>
+                    </div>
+                    <p class="table-footnote"><i class="fa-solid fa-circle-info"></i> Records are fetched from the historical weather archive. Latest available data may have a delay.</p>
+                </article>
+                <article class="panel summary-panel">
+                    <h3>Data Summary</h3>
+                    <p>Statistics from the available historical records.</p>
+                    <div class="summary-stat"><span>Average temperature</span><strong id="avgTemp">--</strong></div>
+                    <div class="summary-stat"><span>Highest temperature</span><strong id="maxTemp">--</strong></div>
+                    <div class="summary-stat"><span>Total rainfall</span><strong id="totalRain">--</strong></div>
+                    <div class="summary-stat"><span>Average wind speed</span><strong id="avgWind">--</strong></div>
+                    <div class="summary-disclaimer">Statistics describe the retrieved period, not a long-term climate average.</div>
+                </article>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <div><span class="footer-brand"><i class="fa-solid fa-cloud-bolt"></i> atmos.</span><span>Weather Data Analyzer</span></div>
+            <div>Created by <strong>USMAN KAMBOH</strong></div>
+            <div>© <span id="footerYear"></span> <span class="footer-status"><span></span> System operational</span></div>
+        </footer>
+    </main>
+</div>
+<div class="toast" id="toast"></div>
+    <script src="../static/script.js" defer></script>
+
+</body>
+</html>
